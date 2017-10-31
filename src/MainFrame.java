@@ -1,9 +1,15 @@
+import javafx.stage.FileChooser;
+
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.util.Random;
 
 public class MainFrame extends JFrame {
@@ -14,15 +20,23 @@ public class MainFrame extends JFrame {
     private JMenu jmGame=new JMenu("Game");
     private JMenu jmAbout=new JMenu("About");
     private JMenuItem jMenuItemExit=new JMenuItem("Exit");
+    private JMenuItem jmiBook=new JMenuItem("Book");
+    private JMenuItem jmiCategory=new JMenuItem("Category");
     private JMenuItem jMenuItemFont=new JMenuItem("Font");
     private JMenuItem jMenuItemLoto=new JMenuItem("Loto");
     private JDesktopPane jdp=new JDesktopPane();//用不到cp的話
+    //---------------Loto
     private JInternalFrame jInternalFrame=new JInternalFrame();
     private Container jifCP;
     private JPanel jpn=new JPanel(new GridLayout(1,6,5,5));//放樂透亂數
     private JPanel jpn2=new JPanel(new GridLayout(1,2,5,5));//放功能
-    private JPanel jpnFont=new JPanel(new GridLayout(2,3,5,5));//jpnFont
     private JLabel jlb[]=new JLabel[6];
+    private JButton jbtnClose=new JButton("Close");
+    private JButton jbtnRe=new JButton("Re");
+    private int check[]=new int[6];
+    private Random rmd=new Random(System.currentTimeMillis());
+    //--------------------------Font
+    private JPanel jpnFont=new JPanel(new GridLayout(2,3,5,5));//jpnFont
     private JLabel jlbFfamily=new JLabel("Family");
     private JLabel jlbFstyle=new JLabel("Style");
     private JLabel jlbFsize=new JLabel("Size");
@@ -30,10 +44,18 @@ public class MainFrame extends JFrame {
     private JComboBox jcbStyle=new JComboBox(option);
     private JTextField jtffamily=new JTextField("Times new Romen");
     private JTextField jtfSize=new JTextField("20");
-    private JButton jbtnClose=new JButton("Close");
-    private JButton jbtnRe=new JButton("Re");
-    private int check[]=new int[6];
-    private Random rmd=new Random(System.currentTimeMillis());
+    //----------InternalFrame FileChooser
+    private Container jIFAddCategoryCP;
+    private FileChooser jfc=new FileChooser();
+    private JInternalFrame jIFAddCategory=new JInternalFrame();
+    private JMenuBar jIFAddCategoryjmb=new JMenuBar();
+    private JMenuItem jmData=new JMenuItem("Data");
+    private JMenuItem jmLoad=new JMenuItem("Load");
+    private JMenuItem jmNew=new JMenuItem("New");
+    private JMenuItem jmClose=new JMenuItem("Close");
+    private JTextArea jta=new JTextArea();
+    private JScrollPane jsp=new JScrollPane();
+
 
     public MainFrame(LoginFrame login){
         init();
@@ -48,6 +70,8 @@ public class MainFrame extends JFrame {
         jmb.add(jmSet);
         jmb.add(jmGame);
         jmb.add(jmAbout);
+        jmF.add(jmiBook);
+        jmF.add(jmiCategory);
         jmF.add(jMenuItemExit);
         jmSet.add(jMenuItemFont);
         jmGame.add(jMenuItemLoto);
@@ -64,6 +88,43 @@ public class MainFrame extends JFrame {
         jifCP.add(jpn2,BorderLayout.SOUTH);
         jpn2.add(jbtnClose);
         jpn2.add(jbtnRe);
+        //----------InternalFrame FileChooser----------------------
+        jIFAddCategoryCP=jIFAddCategory.getContentPane();
+        jIFAddCategoryCP.setLayout(new BorderLayout(5,5));
+        jIFAddCategoryCP.add(jsp, BorderLayout.CENTER);
+        jIFAddCategory.setBounds(0,0,500,500);
+        jIFAddCategory.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        jIFAddCategoryjmb.add(jmData);
+        jmData.add(jmLoad);
+        jmData.add(jmNew);
+        jmData.add(jmClose);
+        jdp.add(jIFAddCategory);
+        jmiCategory.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                jIFAddCategory.setVisible(true);
+            }
+        });
+        jmLoad.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(jfc.showOpenDialog(null) ==JFileChooser.APPROVE_OPTION){
+                    try{
+                        File inFile=jfc.getSelectedFile();
+                        BufferedReader br= new BufferedReader(new FileReader(inFile));
+                        System.out.println("FileName"+inFile.getName());
+                        String str="";
+                        while((str=br.readLine())!=null){
+                            jta.append(str+"\n");
+                        }
+                        System.out.println("Read file Finished!");
+                    }catch (Exception ioe){
+                        JOptionPane.showMessageDialog(null,"Error"+ioe.toString());
+                    }
+                }
+            }
+        });
+        //--------------Font--------------------
         jMenuItemFont.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
