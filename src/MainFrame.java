@@ -1,7 +1,4 @@
-import javafx.stage.FileChooser;
-
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -46,13 +43,13 @@ public class MainFrame extends JFrame {
     private JTextField jtfSize=new JTextField("20");
     //----------InternalFrame FileChooser
     private Container jIFAddCategoryCP;
-    private FileChooser jfc=new FileChooser();
+    private JFileChooser jfc=new JFileChooser();
     private JInternalFrame jIFAddCategory=new JInternalFrame();
     private JMenuBar jIFAddCategoryjmb=new JMenuBar();
-    private JMenuItem jmData=new JMenuItem("Data");
-    private JMenuItem jmLoad=new JMenuItem("Load");
-    private JMenuItem jmNew=new JMenuItem("New");
-    private JMenuItem jmClose=new JMenuItem("Close");
+    private JMenu jmData=new JMenu("Data");
+    private JMenuItem jmiLoad=new JMenuItem("Load");
+    private JMenuItem jmiNew=new JMenuItem("New");
+    private JMenuItem jmiClose=new JMenuItem("Close");
     private JTextArea jta=new JTextArea();
     private JScrollPane jsp=new JScrollPane();
 
@@ -94,10 +91,11 @@ public class MainFrame extends JFrame {
         jIFAddCategoryCP.add(jsp, BorderLayout.CENTER);
         jIFAddCategory.setBounds(0,0,500,500);
         jIFAddCategory.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        jIFAddCategory.setJMenuBar(jIFAddCategoryjmb);
         jIFAddCategoryjmb.add(jmData);
-        jmData.add(jmLoad);
-        jmData.add(jmNew);
-        jmData.add(jmClose);
+        jmData.add(jmiLoad);
+        jmData.add(jmiNew);
+        jmData.add(jmiClose);
         jdp.add(jIFAddCategory);
         jmiCategory.addActionListener(new ActionListener() {
             @Override
@@ -105,14 +103,14 @@ public class MainFrame extends JFrame {
                 jIFAddCategory.setVisible(true);
             }
         });
-        jmLoad.addActionListener(new ActionListener() {
+        jmiLoad.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if(jfc.showOpenDialog(null) ==JFileChooser.APPROVE_OPTION){
                     try{
                         File inFile=jfc.getSelectedFile();
                         BufferedReader br= new BufferedReader(new FileReader(inFile));
-                        System.out.println("FileName"+inFile.getName());
+                        System.out.println("FileName:"+inFile.getName());
                         String str="";
                         while((str=br.readLine())!=null){
                             jta.append(str+"\n");
